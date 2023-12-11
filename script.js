@@ -80,7 +80,7 @@ const loadImages = () => {
   }
   depthImage = textureLoader.load("img/" + settings.originalImagePath + "_depth.jpg")
 
-  originalImage = textureLoader.load( "img/" + settings.originalImagePath + ".", function ( tex ) {
+  originalImage = textureLoader.load( "img/" + settings.originalImagePath + ".jpg", function ( tex ) {
     originalImageDetails.width = tex.image.width;
     originalImageDetails.height = tex.image.height;
     originalImageDetails.aspectRatio = tex.image.height / tex.image.width;
