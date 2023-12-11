@@ -6,7 +6,7 @@
 const settings = {
   xThreshold: 20,
   yThreshold: 35,
-  strength: 0.16,
+  strength: 0.17,
   originalImagePath: 'img1'
 }
 
@@ -245,8 +245,8 @@ const tick = () =>
   previousTime = elapsedTime
 
   // Set Cursor Variables
-  const parallaxX = -cursor.x * settings.strength
-  const parallaxY = -cursor.y * settings.strength
+  const parallaxX = cursor.x * settings.strength
+  const parallaxY = cursor.y * settings.strength
 
   cursor.lerpX  += (parallaxX - cursor.lerpX ) * 5 * deltaTime;
   cursor.lerpY += (parallaxY - cursor.lerpY) * 5 * deltaTime;
