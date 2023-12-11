@@ -7,7 +7,7 @@ const settings = {
   xThreshold: 20,
   yThreshold: 35,
   strength: 0.17,
-  originalImagePath: 'img1'
+  originalImagePath: 'img3'
 }
 
 // Sizes
