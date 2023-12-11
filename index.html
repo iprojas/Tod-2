@@ -1,16 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - Fake 3d Image - Three.js</title>
-  <link rel="stylesheet" href="style.css">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css">
+  <title>3d Portrait</title>
+  <style>body { margin: 0; padding: 0; overflow: hidden; }</style>
 </head>
 <body>
-<!-- partial:index.partial.html -->
+
+  
 <canvas class="webgl"></canvas>
-<!-- partial -->
-  <script type="module" src="script.js"></script>
+
+  <!-- initialization -->
+  <script src="parallax-effect.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.117.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
+
+  <script src="script.js"></script>
 
 </body>
 </html>

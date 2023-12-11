@@ -6,7 +6,6 @@
 const settings = {
   xThreshold: 20,
   yThreshold: 35,
-  strength: 0.15,
   originalImagePath: 'img1'
 }
 
@@ -78,9 +77,9 @@ const loadImages = () => {
     originalImage.dispose()
     depthImage.dispose()
   }
-  depthImage = textureLoader.load("img/" + settings.originalImagePath + "_depth.jpg")
+  depthImage = textureLoader.load("img/" + settings.originalImagePath + "-d.png")
 
-  originalImage = textureLoader.load( "img/" + settings.originalImagePath + ".", function ( tex ) {
+  originalImage = textureLoader.load( "img/" + settings.originalImagePath + ".png", function ( tex ) {
     originalImageDetails.width = tex.image.width;
     originalImageDetails.height = tex.image.height;
     originalImageDetails.aspectRatio = tex.image.height / tex.image.width;
@@ -162,19 +161,12 @@ create3dImage();
  */
 
 gui.add(settings, 'originalImagePath', { 
-  Image1: 'img1',
-  Image2: 'img2',
-  Image3: 'img3',
-  Image4: 'img4',
-  Image5: 'img5',
-  Image6: 'img6',
-  Image7: 'img7',
-  Image8: 'img8',
-  Image9: 'img9',
+  Dog: 'img1',
+  Girl: 'img2',
+  Splash: 'img3'
 }).onFinishChange(loadImages).name('Image')
 gui.add(settings, 'xThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('X Threshold')
 gui.add(settings, 'yThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('Y Threshold')
-gui.add(settings, 'strength').min(0).max(3).step(0.1).onFinishChange(loadImages).name('Strength')
 
 
 /**
@@ -245,8 +237,8 @@ const tick = () =>
   previousTime = elapsedTime
 
   // Set Cursor Variables
-  const parallaxX = cursor.x * settings.strength
-  const parallaxY = - cursor.y * settings.strength
+  const parallaxX = cursor.x * 0.15
+  const parallaxY = - cursor.y * 0.15
 
   cursor.lerpX  += (parallaxX - cursor.lerpX ) * 5 * deltaTime;
   cursor.lerpY += (parallaxY - cursor.lerpY) * 5 * deltaTime;

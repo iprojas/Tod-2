@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css">
+  <title>Parallax-effect with Three.js</title>
+  <style>body { margin: 0; padding: 0; overflow: hidden; }</style>
+</head>
+<body>
+
+  <!-- initialization -->
+  <script src="parallax-effect-master/dist/parallax-effect.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.117.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.117.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script>
+
+    let scene, renderer, mesh;
+    
+    init();
+    animate();
+
+    let seed = 0.016;
+    Math.random = function () {
+
+      let x = Math.sin( seed ++ ) * 10000;
+      return x - Math.floor( x );
+
+    };
+
+    function init() {
+
+      let dummy = new THREE.Object3D();
+      let xCount = 1;
+      let yCount = 1;
+      let count = xCount * yCount;
+
+      renderer = new THREE.WebGLRenderer( { antialias: true } );
+      renderer.setPixelRatio( window.devicePixelRatio );
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      document.body.appendChild( renderer.domElement );
+
+      scene = new THREE.Scene();
+
+      let pos0 = new THREE.Vector3().set( 0, 0, 7 );
+      let fov0 = 30;
+      let aspect = window.innerWidth / window.innerHeight;
+      camera = new THREE.PerspectiveCamera( fov0, aspect, 1, 70 );
+      camera.position.copy( pos0 );
+
+
+      // camera update with parallax
+
+      Parallax.init( view => {
+        view.x *= 1;
+        view.y *= 1;
+        camera.position.set( pos0.x + 0.8 * view.x, pos0.y + 1.2 * view.y, pos0.z * ( 0.8 + 0.2 * view.z ) );
+        camera.rotation.x = - 0.12 * view.y / aspect / 1.5;
+        camera.rotation.y = 0.12 * view.x;
+        camera.fov = fov0 / ( 1.3 - 0.3 * view.z );
+        camera.updateProjectionMatrix();
+      }, { smoothDist: 0.1 } ).catch( errorMessage => {
+        alert('TFJS not loaded! ' + errorMessage);
+      });
+
+      //
+
+      new THREE.GLTFLoader().load( 'parallax-effect-master/examples/res/three/head.glb', function ( gltf ) {
+
+        let instanceColors = [];
+
+        for ( let i = 0; i < 3 * count; i ++ ) {
+
+          instanceColors.push( Math.random() );
+
+        }
+
+        let geometry = gltf.scene.children[ 0 ].geometry;
+        geometry.setAttribute( 'instanceColor', new THREE.InstancedBufferAttribute( new Float32Array( instanceColors ), 3 ) );
+        geometry.computeVertexNormals();
+        geometry.scale( 0.5, 0.5, 0.5 );
+
+        new THREE.TextureLoader().load( 'parallax-effect-master/examples/res/three/matcap.jpg', function ( texture ) {
+
+          texture.encoding = THREE.sRGBEncoding;
+          let material = new THREE.MeshMatcapMaterial( { color: 0xaaaaff, matcap: texture } );
+
+          material.onBeforeCompile = function ( shader ) {
+
+            shader.vertexShader = shader.vertexShader
+              .replace( 'void main() {', [
+                  'attribute vec3 instanceColor;',
+                  'varying vec3 vInstanceColor;',
+                  'void main() {',
+                  'vInstanceColor = instanceColor;'
+                ].join( '\n' ) );
+
+            shader.fragmentShader = shader.fragmentShader
+              .replace( '#include <common>', 'varying vec3 vInstanceColor;' )
+              .replace( 'vec4 diffuseColor = vec4( diffuse, opacity );',
+                'vec4 diffuseColor = vec4( diffuse * vInstanceColor, opacity );' );
+
+          };
+
+          mesh = new THREE.InstancedMesh( geometry, material, count );
+
+          if ( mesh ) {
+
+            let i = 0;
+            let xoffset = 5;
+            let yoffset = 4;
+
+            for ( let x = 0; x < xCount; x ++ ) {
+
+              for ( let z = 0; z < yCount; z ++ ) {
+
+                dummy.position.set( xoffset * ( xCount / 2 - x - 0.5 ), 0, - yoffset * z );
+                dummy.updateMatrix();
+                mesh.setMatrixAt( i ++, dummy.matrix );
+
+              }
+
+            }
+
+          }
+
+          scene.add( mesh );
+
+        } );
+
+      } );
+
+      window.addEventListener( 'resize', onWindowResize, false );
+
+    }
+
+    function onWindowResize() {
+
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }
+
+    function animate() {
+
+      renderer.render( scene, camera );
+      requestAnimationFrame( animate );
+
+    }
+    console.log(view.x);
+  </script>
+
+</body>
+</html>
