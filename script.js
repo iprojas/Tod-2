@@ -7,7 +7,7 @@ const settings = {
   xThreshold: 20,
   yThreshold: 35,
   strength: 0.17,
-  originalImagePath: 'img3'
+  originalImagePath: '1'
 }
 
 // Sizes
@@ -162,16 +162,8 @@ create3dImage();
  */
 
 gui.add(settings, 'originalImagePath', { 
-  Image1: 'img1',
-  Image2: 'img2',
-  Image3: 'img3',
-  Image4: 'img4',
-  Image5: 'img5',
-  Image6: 'img6',
-  Image7: 'img7',
-  Image8: 'img8',
-  Image9: 'img9',
   Image10: '1',
+  Image10: '1'
 }).onFinishChange(loadImages).name('Image')
 gui.add(settings, 'xThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('X Threshold')
 gui.add(settings, 'yThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('Y Threshold')
