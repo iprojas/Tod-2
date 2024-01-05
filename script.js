@@ -4,9 +4,9 @@
 
 // Main Settings
 const settings = {
-  xThreshold: 20,
-  yThreshold: 35,
-  strength: 0.17,
+  xThreshold: 30,
+  yThreshold: 30,
+  strength: 0.2,
   originalImagePath: '1'
 }
 
@@ -43,7 +43,7 @@ const cursor = {
  */
 
 // Debug
-const gui = new dat.GUI()
+// const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -73,22 +73,21 @@ const textureLoader = new THREE.TextureLoader()
 
 const loadImages = () => {
 
-  if(originalImage !== null || depthImage !== null)
-  {
+  if (originalImage !== null || depthImage !== null) {
     originalImage.dispose()
     depthImage.dispose()
   }
   depthImage = textureLoader.load("img/" + settings.originalImagePath + "_depth.png")
 
-  originalImage = textureLoader.load( "img/" + settings.originalImagePath + ".png", function ( tex ) {
+  originalImage = textureLoader.load("img/" + settings.originalImagePath + ".png", function (tex) {
     originalImageDetails.width = tex.image.width;
     originalImageDetails.height = tex.image.height;
     originalImageDetails.aspectRatio = tex.image.height / tex.image.width;
 
     create3dImage();
     resize();
-  } );
-  
+  });
+
 }
 loadImages()
 
@@ -98,13 +97,12 @@ loadImages()
  */
 
 const create3dImage = () => {
-  
+
   // Cleanup Geometry for GUI
-  if(plane !== null)
-  {
-      planeGeometry.dispose()
-      planeMaterial.dispose()
-      scene.remove(plane)
+  if (plane !== null) {
+    planeGeometry.dispose()
+    planeMaterial.dispose()
+    scene.remove(plane)
   }
 
   planeGeometry = new THREE.PlaneBufferGeometry(1, 1);
@@ -150,32 +148,23 @@ const create3dImage = () => {
   });
 
   plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    
+
   scene.add(plane);
 }
 create3dImage();
 
 
 /**
- * Add Settings to GUI
- */
+//  * Add Settings to GUI
+//  */
 
-gui.add(settings, 'originalImagePath', { 
-  Image1: '1',
-  Image1: '2',
-  Image1: '3',
-  Image1: '4',
-  Image1: '5',
-  Image1: '6',
-  Image1: '7',
-  Image1: '8',
-  Image1: '9',
-  Image1: '10',
- 
-}).onFinishChange(loadImages).name('Image')
-gui.add(settings, 'xThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('X Threshold')
-gui.add(settings, 'yThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('Y Threshold')
-gui.add(settings, 'strength').min(0).max(3).step(0.1).onFinishChange(loadImages).name('Strength')
+// gui.add(settings, 'originalImagePath', { 
+//   Image1: '1',
+//   Image2: '2'
+// }).onFinishChange(loadImages).name('Image')
+// gui.add(settings, 'xThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('X Threshold')
+// gui.add(settings, 'yThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('Y Threshold')
+// gui.add(settings, 'strength').min(0).max(3).step(0.1).onFinishChange(loadImages).name('Strength')
 
 
 /**
@@ -193,10 +182,10 @@ const resize = () => {
   camera.updateProjectionMatrix()
 
   // Update Image Size
-  if(sizes.height/sizes.width < originalImageDetails.aspectRatio) {
-    plane.scale.set( (fovY * camera.aspect), ((sizes.width / sizes.height) * originalImageDetails.aspectRatio), 1 );
+  if (sizes.height / sizes.width < originalImageDetails.aspectRatio) {
+    plane.scale.set((fovY * camera.aspect), ((sizes.width / sizes.height) * originalImageDetails.aspectRatio), 1);
   } else {
-    plane.scale.set( (fovY / originalImageDetails.aspectRatio), fovY, 1 );
+    plane.scale.set((fovY / originalImageDetails.aspectRatio), fovY, 1);
   }
 
   // Update renderer
@@ -204,8 +193,7 @@ const resize = () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
   resize()
 })
 
@@ -215,17 +203,17 @@ window.addEventListener('resize', () =>
  */
 
 
-Parallax.init( view => {
+Parallax.init(view => {
   view.x *= 10;
   view.y *= 10;
   cursor.x = view.x;
   cursor.y = view.y;
-  }, {
-    smoothEye: 0.8, // smoothing eye (x, y)
-    smoothDist: 0.25, // smoothing distance (z)
-    defautDist: 0.12, // parameter for distance estimation
-    threshold: 0.85 // blazeface detection probability
-  }
+}, {
+  smoothEye: 0.8, // smoothing eye (x, y)
+  smoothDist: 0.25, // smoothing distance (z)
+  defautDist: 0.12, // parameter for distance estimation
+  threshold: 0.85 // blazeface detection probability
+}
 )
 
 /**
@@ -238,7 +226,6 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-
 /**
  * Animate
  */
@@ -250,10 +237,9 @@ let lastLerpXValue = 0;
 
 // Function to change the image path every 5 seconds
 const changeImageEvery5Seconds = () => {
-  const imageIndex = Math.floor((clock.getElapsedTime() / 8) % 9) + 1;
+  const imageIndex = Math.floor((clock.getElapsedTime() / 5) % 9) + 1;
   settings.originalImagePath = imageIndex.toString();
   loadImages();
-  console.log(`Changed to Image ${imageIndex}`);
 };
 
 const tick = () => {
@@ -285,8 +271,7 @@ const tick = () => {
   if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
     // Change image every 5 seconds
     changeImageEvery5Seconds();
-  } else { loadImages(); 
-  console.log("cara detectada");} 
+  } else { loadImages(); }
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
