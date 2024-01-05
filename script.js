@@ -90,7 +90,6 @@ const loadImages = () => {
   } );
   
 }
-
 loadImages()
 
 
@@ -162,8 +161,17 @@ create3dImage();
  */
 
 gui.add(settings, 'originalImagePath', { 
-  Image10: '1',
-  Image10: '1'
+  Image1: '1',
+  Image1: '2',
+  Image1: '3',
+  Image1: '4',
+  Image1: '5',
+  Image1: '6',
+  Image1: '7',
+  Image1: '8',
+  Image1: '9',
+  Image1: '10',
+ 
 }).onFinishChange(loadImages).name('Image')
 gui.add(settings, 'xThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('X Threshold')
 gui.add(settings, 'yThreshold').min(0).max(50).step(1).onFinishChange(loadImages).name('Y Threshold')
@@ -203,15 +211,22 @@ window.addEventListener('resize', () =>
 
 
 /**
- * Cursor
+ * Cursor Parallax load the web camera and track the users head position  
  */
+
 
 Parallax.init( view => {
   view.x *= 10;
   view.y *= 10;
   cursor.x = view.x;
   cursor.y = view.y;
-});
+  }, {
+    smoothEye: 0.8, // smoothing eye (x, y)
+    smoothDist: 0.25, // smoothing distance (z)
+    defautDist: 0.12, // parameter for distance estimation
+    threshold: 0.85 // blazeface detection probability
+  }
+)
 
 /**
  * Renderer
@@ -228,30 +243,53 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 
-const clock = new THREE.Clock()
-let previousTime = 0
+const clock = new THREE.Clock();
+let previousTime = 0;
+let lastLerpXChangeTime = 0;
+let lastLerpXValue = 0;
 
-const tick = () =>
-{
-  const elapsedTime = clock.getElapsedTime()
-  const deltaTime = elapsedTime - previousTime
-  previousTime = elapsedTime
+// Function to change the image path every 5 seconds
+const changeImageEvery5Seconds = () => {
+  const imageIndex = Math.floor((clock.getElapsedTime() / 8) % 9) + 1;
+  settings.originalImagePath = imageIndex.toString();
+  loadImages();
+  console.log(`Changed to Image ${imageIndex}`);
+};
+
+const tick = () => {
+  const elapsedTime = clock.getElapsedTime();
+  const deltaTime = elapsedTime - previousTime;
+  previousTime = elapsedTime;
 
   // Set Cursor Variables
-  const parallaxX = cursor.x * settings.strength
-  const parallaxY = cursor.y * settings.strength
+  const parallaxX = cursor.x * settings.strength;
+  const parallaxY = cursor.y * settings.strength;
 
-  cursor.lerpX  += (parallaxX - cursor.lerpX ) * 5 * deltaTime;
+  // Check if cursor.lerpX has changed
+  if (cursor.lerpX !== lastLerpXValue) {
+    lastLerpXValue = cursor.lerpX;
+    lastLerpXChangeTime = elapsedTime;
+  }
+
+  cursor.lerpX += (parallaxX - cursor.lerpX) * 5 * deltaTime;
   cursor.lerpY += (parallaxY - cursor.lerpY) * 5 * deltaTime;
 
   // Mouse Positioning Uniform Values
-  planeMaterial.uniforms.uMouse.value = new THREE.Vector2(cursor.lerpX , cursor.lerpY)
+  planeMaterial.uniforms.uMouse.value = new THREE.Vector2(cursor.lerpX, cursor.lerpY);
 
   // Render
-  renderer.render(scene, camera)
+  renderer.render(scene, camera);
+
+  // Check for the changes over time (adjust the threshold as needed)
+  const timeThreshold = 1.0; // seconds
+  if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
+    // Change image every 5 seconds
+    changeImageEvery5Seconds();
+  } else { loadImages(); 
+  console.log("cara detectada");} 
 
   // Call tick again on the next frame
-  window.requestAnimationFrame(tick)
-}
+  window.requestAnimationFrame(tick);
+};
 
-tick()
+tick();
