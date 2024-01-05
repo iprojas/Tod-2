@@ -6,7 +6,7 @@
 const settings = {
   xThreshold: 30,
   yThreshold: 30,
-  strength: 0.2,
+  strength: 1.2,
   originalImagePath: '1'
 }
 
@@ -56,13 +56,13 @@ const scene = new THREE.Scene()
  * Camera
  */
 
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(75, sizes.height / sizes.width, 0.1, 100)
 camera.position.x = 0
 camera.position.y = 0
 camera.position.z = 0.7
 scene.add(camera)
 
-let fovY = camera.position.z * camera.getFilmHeight() / camera.getFocalLength();
+let fovY = 1.1;
 
 
 /**
@@ -206,8 +206,10 @@ window.addEventListener('resize', () => {
 Parallax.init(view => {
   view.x *= 10;
   view.y *= 10;
+  view.z *= 10;
   cursor.x = view.x;
   cursor.y = view.y;
+  cursor.z = view.z;
 }, {
   smoothEye: 0.8, // smoothing eye (x, y)
   smoothDist: 0.25, // smoothing distance (z)
@@ -250,6 +252,7 @@ const tick = () => {
   // Set Cursor Variables
   const parallaxX = cursor.x * settings.strength;
   const parallaxY = cursor.y * settings.strength;
+  const parallaxZ = cursor.z * settings.strength;
 
   // Check if cursor.lerpX has changed
   if (cursor.lerpX !== lastLerpXValue) {
@@ -271,7 +274,10 @@ const tick = () => {
   if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
     // Change image every 5 seconds
     changeImageEvery5Seconds();
-  } else { loadImages(); }
+    camera.position.z = 1
+  } else { 
+    loadImages();
+    camera.position.z = 1.7 }
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
