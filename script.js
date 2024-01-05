@@ -4,9 +4,9 @@
 
 // Main Settings
 const settings = {
-  xThreshold: 30,
-  yThreshold: 30,
-  strength: 1.2,
+  xThreshold: 160,
+  yThreshold: 160,
+  strength: 0.2,
   originalImagePath: '1'
 }
 
@@ -56,10 +56,10 @@ const scene = new THREE.Scene()
  * Camera
  */
 
-const camera = new THREE.PerspectiveCamera(75, sizes.height / sizes.width, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(95, sizes.height / sizes.width, 0.1, 100)
 camera.position.x = 0
 camera.position.y = 0
-camera.position.z = 0.7
+camera.position.z = 0.5
 scene.add(camera)
 
 let fovY = 1.1;
@@ -211,8 +211,8 @@ Parallax.init(view => {
   cursor.y = view.y;
   cursor.z = view.z;
 }, {
-  smoothEye: 0.8, // smoothing eye (x, y)
-  smoothDist: 0.25, // smoothing distance (z)
+  smoothEye: 0.1, // smoothing eye (x, y)
+  smoothDist: 0.15, // smoothing distance (z)
   defautDist: 0.12, // parameter for distance estimation
   threshold: 0.85 // blazeface detection probability
 }
@@ -244,6 +244,12 @@ const changeImageEvery5Seconds = () => {
   loadImages();
 };
 
+
+// Function to lerp camera position
+const lerpCameraPosition = (targetPosition, alpha) => {
+  camera.position.lerp(targetPosition, alpha);
+};
+
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
@@ -252,7 +258,7 @@ const tick = () => {
   // Set Cursor Variables
   const parallaxX = cursor.x * settings.strength;
   const parallaxY = cursor.y * settings.strength;
-  const parallaxZ = cursor.z * settings.strength;
+  const parallaxZ = cursor.z * 0.8;
 
   // Check if cursor.lerpX has changed
   if (cursor.lerpX !== lastLerpXValue) {
@@ -264,7 +270,7 @@ const tick = () => {
   cursor.lerpY += (parallaxY - cursor.lerpY) * 5 * deltaTime;
 
   // Mouse Positioning Uniform Values
-  planeMaterial.uniforms.uMouse.value = new THREE.Vector2(cursor.lerpX, cursor.lerpY);
+  // planeMaterial.uniforms.uMouse.value = new THREE.Vector2(cursor.lerpX, cursor.lerpY);
 
   // Render
   renderer.render(scene, camera);
@@ -274,10 +280,23 @@ const tick = () => {
   if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
     // Change image every 5 seconds
     changeImageEvery5Seconds();
-    camera.position.z = 1
-  } else { 
+
+    // Gradual and eased camera position change
+    const targetCameraPosition = new THREE.Vector3(0, 0, 0.4);
+    const alpha = Math.min(deltaTime * 0.5, 1); // Gradual change over 0.5 seconds
+    lerpCameraPosition(targetCameraPosition, alpha);
+  } else {
     loadImages();
-    camera.position.z = 1.7 }
+
+    // Gradual and eased camera position change
+    const targetCameraPosition = new THREE.Vector3(
+      cursor.x * 0.02,
+      cursor.y * 0.01,
+      parallaxZ * 0.06
+    );
+    const alpha = Math.min(deltaTime * 0.1, 1); // Gradual change over 0.5 seconds
+    lerpCameraPosition(targetCameraPosition, alpha);
+  }
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
