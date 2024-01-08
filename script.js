@@ -56,7 +56,7 @@ const scene = new THREE.Scene()
  * Camera
  */
 
-const camera = new THREE.PerspectiveCamera(110, sizes.height / sizes.width, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(95, sizes.height / sizes.width, 0.1, 100)
 camera.position.x = 0
 camera.position.y = 0
 camera.position.z = 0.5
@@ -213,8 +213,8 @@ Parallax.init(view => {
 }, {
   smoothEye: 0.1, // smoothing eye (x, y)
   smoothDist: 0.15, // smoothing distance (z)
-  defautDist: 0.012, // parameter for distance estimation
-  threshold: 0.90 // blazeface detection probability
+  defautDist: 0.12, // parameter for distance estimation
+  threshold: 0.85 // blazeface detection probability
 }
 )
 
@@ -282,8 +282,8 @@ const tick = () => {
     changeImageEvery5Seconds();
 
     // Gradual and eased camera position change
-    const targetCameraPosition = new THREE.Vector3(0, 0, 0.5);
-    const alpha = Math.min(deltaTime * 0.1, 1); // Gradual change over 0.5 seconds
+    const targetCameraPosition = new THREE.Vector3(0, 0, 0.4);
+    const alpha = Math.min(deltaTime * 0.5, 1); // Gradual change over 0.5 seconds
     lerpCameraPosition(targetCameraPosition, alpha);
   } else {
     loadImages();
