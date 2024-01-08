@@ -56,13 +56,13 @@ const scene = new THREE.Scene()
  * Camera
  */
 
-const camera = new THREE.PerspectiveCamera(95, sizes.height / sizes.width, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(120, sizes.height / sizes.width, 0.1, 100)
 camera.position.x = 0
 camera.position.y = 0
-camera.position.z = 0.5
+camera.position.z = 0
 scene.add(camera)
 
-let fovY = 1.1;
+let fovY = 1.15;
 
 
 /**
@@ -214,7 +214,7 @@ Parallax.init(view => {
   smoothEye: 0.1, // smoothing eye (x, y)
   smoothDist: 0.15, // smoothing distance (z)
   defautDist: 0.12, // parameter for distance estimation
-  threshold: 0.85 // blazeface detection probability
+  threshold: 0.95 // blazeface detection probability
 }
 )
 
@@ -258,7 +258,7 @@ const tick = () => {
   // Set Cursor Variables
   const parallaxX = cursor.x * settings.strength;
   const parallaxY = cursor.y * settings.strength;
-  const parallaxZ = cursor.z * 0.8;
+  const parallaxZ = cursor.z * settings.strength;
 
   // Check if cursor.lerpX has changed
   if (cursor.lerpX !== lastLerpXValue) {
@@ -270,20 +270,19 @@ const tick = () => {
   cursor.lerpY += (parallaxY - cursor.lerpY) * 5 * deltaTime;
 
   // Mouse Positioning Uniform Values
-  // planeMaterial.uniforms.uMouse.value = new THREE.Vector2(cursor.lerpX, cursor.lerpY);
+   planeMaterial.uniforms.uMouse.value = new THREE.Vector2(1,1);
 
   // Render
   renderer.render(scene, camera);
 
-  // Check for the changes over time (adjust the threshold as needed)
   const timeThreshold = 1.0; // seconds
   if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
     // Change image every 5 seconds
     changeImageEvery5Seconds();
 
     // Gradual and eased camera position change
-    const targetCameraPosition = new THREE.Vector3(0, 0, 0.4);
-    const alpha = Math.min(deltaTime * 0.5, 1); // Gradual change over 0.5 seconds
+    const targetCameraPosition = new THREE.Vector3(0, 0, 0.27);
+    const alpha = Math.min(deltaTime * 2, 1); // Gradual change over 0.5 seconds
     lerpCameraPosition(targetCameraPosition, alpha);
   } else {
     loadImages();
@@ -291,10 +290,10 @@ const tick = () => {
     // Gradual and eased camera position change
     const targetCameraPosition = new THREE.Vector3(
       cursor.x * 0.02,
-      cursor.y * 0.01,
-      parallaxZ * 0.06
+      cursor.y * 0.02,
+      parallaxZ * 0.03 + 0.2
     );
-    const alpha = Math.min(deltaTime * 0.1, 1); // Gradual change over 0.5 seconds
+    const alpha = Math.min(deltaTime * 4, 1); // Gradual change over 0.5 seconds
     lerpCameraPosition(targetCameraPosition, alpha);
   }
 
