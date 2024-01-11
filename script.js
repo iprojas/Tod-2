@@ -237,13 +237,6 @@ let previousTime = 0;
 let lastLerpXChangeTime = 0;
 let lastLerpXValue = 0;
 
-// Function to change the image path every 5 seconds
-const changeImageEvery5Seconds = () => {
-  const imageIndex = Math.floor((clock.getElapsedTime() / 1) % 216) + 1;
-  settings.originalImagePath = imageIndex.toString();
-  loadImages();
-};
-
 // Function to lerp camera position
 const lerpCameraPosition = (targetPosition, alpha) => {
   camera.position.lerp(targetPosition, alpha);
