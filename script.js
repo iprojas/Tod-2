@@ -237,12 +237,7 @@ let previousTime = 0;
 let lastLerpXChangeTime = 0;
 let lastLerpXValue = 0;
 
-// Function to change the image path every 5 seconds
-// const changeImageEvery5Seconds = () => {
-//   const imageIndex = Math.floor((clock.getElapsedTime() / 1) % 216) + 1;
-//   settings.originalImagePath = imageIndex.toString();
-//   loadImages();
-// };
+
 
 // Function to lerp camera position
 const lerpCameraPosition = (targetPosition, alpha) => {
@@ -257,7 +252,7 @@ let imageIndex = 1; // Starts at 1 and goes up to 216
 let lastImageChangeTime = 0; // Time at last image change
 const imageDisplayDuration = 0.5; // Regular image duration in seconds
 const specialImageDisplayDuration = 2; // Special image duration in seconds
-const specialImageFrequency = 9; // Show special image every 'n' images
+const specialImageFrequency = 10; // Show special image every 'n' images
 let specialImageShown = false; // Flag to determine if the special image is shown
 
 const updateImage = () => {
