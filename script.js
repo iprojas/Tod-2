@@ -238,58 +238,15 @@ let lastLerpXChangeTime = 0;
 let lastLerpXValue = 0;
 
 // Function to change the image path every 5 seconds
-// const changeImageEvery5Seconds = () => {
-//   const imageIndex = Math.floor((clock.getElapsedTime() / 1) % 216) + 1;
-//   settings.originalImagePath = imageIndex.toString();
-//   loadImages();
-// };
+const changeImageEvery5Seconds = () => {
+  const imageIndex = Math.floor((clock.getElapsedTime() / 1) % 216) + 1;
+  settings.originalImagePath = imageIndex.toString();
+  loadImages();
+};
 
 // Function to lerp camera position
 const lerpCameraPosition = (targetPosition, alpha) => {
   camera.position.lerp(targetPosition, alpha);
-};
-
-// const clock = new THREE.Clock();
-// let previousTime = 0;
-
-// Counter variables
-let imageIndex = 1; // Starts at 1 and goes up to 216
-let lastImageChangeTime = 0; // Time at last image change
-const imageDisplayDuration = 1.5; // Regular image duration in seconds
-const specialImageDisplayDuration = 3.2; // Special image duration in seconds
-const specialImageFrequency = 9; // Show special image every 'n' images
-let specialImageShown = false; // Flag to determine if the special image is shown
-
-const updateImage = () => {
-  const elapsedTime = clock.getElapsedTime();
-
-  if (!specialImageShown && (imageIndex % specialImageFrequency === 0)) {
-    // Randomly select one of the four special images
-    const specialImages = ['uno', 'dos', 'tres', 'cuatro'];
-    const randomSpecialImage = specialImages[Math.floor(Math.random() * specialImages.length)];
-    
-    // Set the special image as the current image to be displayed
-    settings.originalImagePath = randomSpecialImage;
-    loadImages();
-    specialImageShown = true;
-    lastImageChangeTime = elapsedTime;
-    
-    setTimeout(() => {
-      // Once the special image has been shown for the set duration, continue with the sequence
-      imageIndex++; // Ensure we increment imageIndex to continue sequence
-      settings.originalImagePath = imageIndex.toString();
-      loadImages();
-      specialImageShown = false;
-    }, specialImageDisplayDuration * 1000);
-  } else {
-    // Check if we need to update the regular image
-    if ((elapsedTime - lastImageChangeTime) > imageDisplayDuration && !specialImageShown) {
-      imageIndex = (imageIndex % 216) + 1; // Wrap around after 216
-      settings.originalImagePath = imageIndex.toString();
-      loadImages();
-      lastImageChangeTime = elapsedTime;
-    }
-  }
 };
 
 const tick = () => {
@@ -312,19 +269,19 @@ const tick = () => {
   cursor.lerpY += (parallaxY - cursor.lerpY) * 5 * deltaTime;
 
   // Mouse Positioning Uniform Values
-  planeMaterial.uniforms.uMouse.value = new THREE.Vector2(1, 1);
+   planeMaterial.uniforms.uMouse.value = new THREE.Vector2(1,1);
 
   // Render
   renderer.render(scene, camera);
 
-
   const timeThreshold = 1.5; // seconds
   if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
-    updateImage();
+    // Change image every 5 seconds
+    changeImageEvery5Seconds();
 
     // Gradual and eased camera position change
     const targetCameraPosition = new THREE.Vector3(0, 0, 0.27);
-    const alpha = Math.min(deltaTime * 2, 1);
+    const alpha = Math.min(deltaTime * 2, 1); // Gradual change over 0.5 seconds
     lerpCameraPosition(targetCameraPosition, alpha);
   } else {
     loadImages();
