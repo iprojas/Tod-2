@@ -77,9 +77,9 @@ const loadImages = () => {
     originalImage.dispose()
     depthImage.dispose()
   }
-  depthImage = textureLoader.load("img/" + settings.originalImagePath + "_depth.png")
+  depthImage = textureLoader.load("img/1.jpg")
 
-  originalImage = textureLoader.load("img/" + settings.originalImagePath + ".png", function (tex) {
+  originalImage = textureLoader.load("img/h/" + settings.originalImagePath + ".png", function (tex) {
     originalImageDetails.width = tex.image.width;
     originalImageDetails.height = tex.image.height;
     originalImageDetails.aspectRatio = tex.image.height / tex.image.width;
@@ -204,17 +204,17 @@ window.addEventListener('resize', () => {
 
 
 Parallax.init(view => {
-  view.x *= 10;
+  view.x *= 20;
   view.y *= 10;
-  view.z *= 10;
+  view.z *= 2.2;
   cursor.x = view.x;
   cursor.y = view.y;
   cursor.z = view.z;
 }, {
-  smoothEye: 0.1, // smoothing eye (x, y)
+  // smoothEye: 0.1, // smoothing eye (x, y)
   smoothDist: 0.15, // smoothing distance (z)
   defautDist: 0.12, // parameter for distance estimation
-  threshold: 0.95 // blazeface detection probability
+  threshold: 0.85 // blazeface detection probability
 }
 )
 
@@ -239,11 +239,10 @@ let lastLerpXValue = 0;
 
 // Function to change the image path every 5 seconds
 const changeImageEvery5Seconds = () => {
-  const imageIndex = Math.floor((clock.getElapsedTime() / 5) % 9) + 1;
+  const imageIndex = Math.floor((clock.getElapsedTime() / 1) % 216) + 1;
   settings.originalImagePath = imageIndex.toString();
   loadImages();
 };
-
 
 // Function to lerp camera position
 const lerpCameraPosition = (targetPosition, alpha) => {
@@ -275,7 +274,7 @@ const tick = () => {
   // Render
   renderer.render(scene, camera);
 
-  const timeThreshold = 1.0; // seconds
+  const timeThreshold = 1.5; // seconds
   if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
     // Change image every 5 seconds
     changeImageEvery5Seconds();
