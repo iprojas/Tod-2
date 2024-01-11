@@ -318,10 +318,9 @@ const tick = () => {
   renderer.render(scene, camera);
 
 
-  const timeThreshold = 1.5; // seconds
+  const timeThreshold = 0.2; // seconds
   if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
     updateImage();
-
     // Gradual and eased camera position change
     const targetCameraPosition = new THREE.Vector3(0, 0, 0.27);
     const alpha = Math.min(deltaTime * 2, 1);
