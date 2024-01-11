@@ -204,9 +204,9 @@ window.addEventListener('resize', () => {
 
 
 Parallax.init(view => {
-  view.x *= 0;
+  view.x *= 20;
   view.y *= 10;
-  view.z *= 3;
+  view.z *= 2.2;
   cursor.x = view.x;
   cursor.y = view.y;
   cursor.z = view.z;
