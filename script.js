@@ -255,8 +255,8 @@ const lerpCameraPosition = (targetPosition, alpha) => {
 // Counter variables
 let imageIndex = 1; // Starts at 1 and goes up to 216
 let lastImageChangeTime = 0; // Time at last image change
-const imageDisplayDuration = 1.5; // Regular image duration in seconds
-const specialImageDisplayDuration = 3.2; // Special image duration in seconds
+const imageDisplayDuration = 0.5; // Regular image duration in seconds
+const specialImageDisplayDuration = 2; // Special image duration in seconds
 const specialImageFrequency = 9; // Show special image every 'n' images
 let specialImageShown = false; // Flag to determine if the special image is shown
 
