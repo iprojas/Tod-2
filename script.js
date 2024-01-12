@@ -214,7 +214,7 @@ Parallax.init(view => {
   // smoothEye: 0.1, // smoothing eye (x, y)
   smoothDist: 0.15, // smoothing distance (z)
   defautDist: 0.12, // parameter for distance estimation
-  threshold: 0.93 // blazeface detection probability
+  threshold: 0.85 // blazeface detection probability
 }
 )
 
