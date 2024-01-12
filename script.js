@@ -313,7 +313,7 @@ const tick = () => {
   renderer.render(scene, camera);
 
 
-  const timeThreshold = 1; // seconds
+  const timeThreshold = 0.3; // seconds
   if (elapsedTime - lastLerpXChangeTime > timeThreshold) {
     updateImage();
 
