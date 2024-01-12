@@ -279,7 +279,7 @@ const updateImage = () => {
   } else {
     // Check if we need to update the regular image
     if ((elapsedTime - lastImageChangeTime) > imageDisplayDuration && !specialImageShown) {
-      imageIndex = (imageIndex % 216) + 1; // Wrap around after 216
+      imageIndex = (imageIndex % 945) + 1; // Wrap around after 216
       settings.originalImagePath = imageIndex.toString();
       loadImages();
       lastImageChangeTime = elapsedTime;
